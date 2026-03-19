@@ -11,6 +11,7 @@ const AE_CONFIG = {
 
   // ── GOOGLE SHEETS ──
   SHEET_ID: '1bq8F0CuKitFf5_vE08ogz5uYyPqDTYIduVTUAJYuOPI',
+  SHEET_URL: 'https://docs.google.com/spreadsheets/d/1bq8F0CuKitFf5_vE08ogz5uYyPqDTYIduVTUAJYuOPI/edit',
   SHEET_NAME: 'Leads',
 
   // ── GOOGLE API KEY ──
