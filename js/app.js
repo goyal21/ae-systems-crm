@@ -89,7 +89,9 @@ const App = (() => {
   }
   function ownerDisplay(email) {
     const f = AE_CONFIG.FOUNDERS.find(x => x.email.toLowerCase() === (email||'').toLowerCase());
-    return f ? f.name.split(' ')[0] : email || '—';
+    if (!f) return email || '—';
+    // Show first 2 words so "Amit S (Srivastava)" shows as "Amit S"
+    return f.name.split(' ').slice(0, 2).join(' ');
   }
 
   // ── INIT ──
