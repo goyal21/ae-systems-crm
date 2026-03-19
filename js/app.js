@@ -141,6 +141,7 @@ return f.name;  }
     }
     updateCounts();
     render();
+    document.getElementById('db-link').href = AE_CONFIG.SHEET_URL || '#';
   }
 
   function onLogin()  { showApp(); refreshLeads(); }
