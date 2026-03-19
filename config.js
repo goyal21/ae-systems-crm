@@ -7,14 +7,14 @@
 const AE_CONFIG = {
 
   // ── GOOGLE OAUTH (from Google Cloud Console) ──
-  GOOGLE_CLIENT_ID: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
+  GOOGLE_CLIENT_ID: '596054794973-8lq3a4h6qtgo46prn74ffob66m2cs6c4.apps.googleusercontent.com',
 
   // ── GOOGLE SHEETS ──
-  SHEET_ID: 'YOUR_GOOGLE_SHEET_ID',
+  SHEET_ID: '1bq8F0CuKitFf5_vE08ogz5uYyPqDTYIduVTUAJYuOPI',
   SHEET_NAME: 'Leads',
 
   // ── GOOGLE API KEY ──
-  API_KEY: 'YOUR_GOOGLE_API_KEY',
+  API_KEY: 'AIzaSyA1oMXHrSiZxlZWWr1na3OYTraH_8vTi9s',
 
   // ── ALLOWED USERS — only these Gmail addresses can log in ──
   ALLOWED_USERS: [
