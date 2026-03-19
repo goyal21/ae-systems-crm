@@ -91,8 +91,7 @@ const App = (() => {
     const f = AE_CONFIG.FOUNDERS.find(x => x.email.toLowerCase() === (email||'').toLowerCase());
     if (!f) return email || '—';
     // Show first 2 words so "Amit S (Srivastava)" shows as "Amit S"
-    return f.name.split(' ').slice(0, 2).join(' ');
-  }
+return f.name;  }
 
   // ── INIT ──
   async function init() {
