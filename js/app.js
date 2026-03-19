@@ -106,11 +106,14 @@ const App = (() => {
     }
   }
 
+  let googleInitDone = false;
   function showLogin() {
     document.getElementById('login-screen').classList.remove('hidden');
     document.getElementById('app-screen').classList.add('hidden');
-    // Init Google Sign-In button
+    if (googleInitDone) return;
+    // Init Google Sign-In button — only once
     if (window.google?.accounts?.id) {
+      googleInitDone = true;
       google.accounts.id.initialize({
         client_id: AE_CONFIG.GOOGLE_CLIENT_ID,
         callback: handleCredentialResponse,
@@ -120,6 +123,9 @@ const App = (() => {
         document.getElementById('google-btn'),
         { theme: 'outline', size: 'large', width: 320, text: 'signin_with' }
       );
+    } else {
+      // GSI script not yet loaded — retry after short delay
+      setTimeout(() => { googleInitDone = false; showLogin(); }, 800);
     }
   }
 
@@ -298,7 +304,7 @@ const App = (() => {
         ${types.map(t => `<div class="filter-chip ${filterType===t?'active':''}" onclick="App.setFilter('type','${t}')">${t==='all'?'All Types':t}</div>`).join('')}
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
-        ${AE_CONFIG.FOUNDERS.map(f => `<div class="filter-chip ${filterOwner===f.email?'active':''}" onclick="App.setFilter('owner','${f.email}')">${f.name.split(' ')[0]}</div>`).join('')}
+        ${AE_CONFIG.FOUNDERS.map(f => `<div class="filter-chip ${filterOwner===f.email?'active':''}" onclick="App.setFilter('owner','${f.email}')">${ownerDisplay(f.email)}</div>`).join('')}
         <div class="filter-chip ${filterOwner==='all'?'active':''}" onclick="App.setFilter('owner','all')">Everyone</div>
       </div>
       <div class="view-toggle">
