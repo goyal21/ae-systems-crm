@@ -27,7 +27,7 @@ const AE_CONFIG = {
 
   // ── FOUNDERS (for lead assignment) ──
   FOUNDERS: [
-    { name: 'Amit Kumar Srivastava', email: 'srvamitsrv@gmail.com' },
+    { name: 'Amit Srivastava', email: 'srvamitsrv@gmail.com' },
     { name: 'Abhishek Wadhawan',     email: 'abhishek.work1904@gmail.com' },
     { name: 'Amit Goyal',            email: 'goyal.21@gmail.com' },
     { name: 'Pawan Sharma',          email: 'tejalsharmapk@gmail.com' },
