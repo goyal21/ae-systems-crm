@@ -22,17 +22,9 @@
     <div class="login-title">CRM · Sales Pipeline</div>
     <div class="login-sub">Sign in with your Google account.<br>Access is restricted to the founding team.</div>
 
-    <div class="login-users">
-      <div class="login-user-item"><div class="login-user-avatar">AS</div>Amit Kumar Srivastava</div>
-      <div class="login-user-item"><div class="login-user-avatar">AW</div>Abhishek Wadhawan</div>
-      <div class="login-user-item"><div class="login-user-avatar">AG</div>Amit Goyal</div>
-      <div class="login-user-item"><div class="login-user-avatar">PS</div>Pawan Sharma</div>
-      <div class="login-user-item"><div class="login-user-avatar">MS</div>Mahir Sharma</div>
-    </div>
-
     <div class="login-error" id="login-error"></div>
     <div id="google-btn"></div>
-    <div class="login-note">Only the 5 authorised Gmail accounts above can access this app.</div>
+    <div class="login-note">Only authorised team members can access this app.</div>
   </div>
 </div>
 
@@ -88,8 +80,7 @@
     <div class="topbar">
       <div class="topbar-title" id="topbar-title">Dashboard <span>Overview</span></div>
       <button class="btn btn-ghost btn-sm" id="btn-refresh" onclick="App.refreshLeads()">↻ Refresh</button>
-      <button class="btn btn-ghost btn-sm" onclick="App.openAddLead()">＋ Add Lead</button>
-      <button class="btn btn-primary btn-sm" onclick="App.openAddLead()">New Opportunity</button>
+      <button class="btn btn-primary btn-sm" onclick="App.openAddLead()">＋ New Opportunity</button>
     </div>
     <div class="content" id="content"></div>
   </div>
