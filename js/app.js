@@ -91,7 +91,8 @@ const App = (() => {
     const f = AE_CONFIG.FOUNDERS.find(x => x.email.toLowerCase() === (email||'').toLowerCase());
     if (!f) return email || '—';
     // Show first 2 words so "Amit S (Srivastava)" shows as "Amit S"
-return f.name;  }
+    return f.name.split(' ').slice(0, 2).join(' ');
+  }
 
   // ── INIT ──
   async function init() {
@@ -141,7 +142,6 @@ return f.name;  }
     }
     updateCounts();
     render();
-    document.getElementById('db-link').href = AE_CONFIG.SHEET_URL || '#';
   }
 
   function onLogin()  { showApp(); refreshLeads(); }
@@ -712,6 +712,112 @@ return f.name;  }
       .then(() => toast('Copied to clipboard'));
   }
 
+  // ── EMAIL IMPORT ──
+  function openEmailImport() {
+    document.getElementById('email-import-text').value = '';
+    document.getElementById('email-import-preview').style.display = 'none';
+    document.getElementById('ei-save-btn').classList.add('hidden');
+    // populate type dropdown
+    const ts = document.getElementById('ei-type');
+    ts.innerHTML = opTypes.map(t => `<option value="${t.name}">${t.name}</option>`).join('');
+    document.getElementById('modal-email-import').classList.remove('hidden');
+  }
+
+  async function parseEmailLead() {
+    const emailText = document.getElementById('email-import-text').value.trim();
+    if (!emailText) { toast('Please paste the email content first', 'error'); return; }
+
+    const btn = document.querySelector('#modal-email-import .btn-ai');
+    btn.innerHTML = '<span class="spinner"></span> Extracting…';
+    btn.disabled = true;
+
+    try {
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 600,
+          system: `You are a lead extraction assistant for AE Systems, an IT-OT company selling SAAR BMS (HVAC optimization), IT Infrastructure, and ELV/CCTV/Fire solutions. Extract lead details from emails and return ONLY valid JSON, no explanation, no markdown.`,
+          messages: [{
+            role: 'user',
+            content: `Extract lead details from this email and return ONLY a JSON object with these exact keys:
+{
+  "contact": "full name of sender or contact person",
+  "company": "company or property name",
+  "phone": "phone number or empty string",
+  "email": "email address or empty string",
+  "city": "city or location mentioned or empty string",
+  "type": "one of: HVAC / BMS (SAAR), IT Infrastructure, ELV / CCTV / Fire — pick best match based on context, default to HVAC / BMS (SAAR)",
+  "notes": "2-3 sentence summary of the requirement, pain point, and any next steps mentioned"
+}
+
+Email content:
+${emailText}`
+          }],
+        }),
+      });
+      const data = await resp.json();
+      const raw = data.content?.map(b => b.text||'').join('').trim();
+      const clean = raw.replace(/```json|```/g, '').trim();
+      const parsed = JSON.parse(clean);
+
+      // Populate preview fields
+      document.getElementById('ei-contact').value = parsed.contact || '';
+      document.getElementById('ei-company').value = parsed.company || '';
+      document.getElementById('ei-phone').value   = parsed.phone   || '';
+      document.getElementById('ei-email').value   = parsed.email   || '';
+      document.getElementById('ei-city').value    = parsed.city    || '';
+      document.getElementById('ei-notes').value   = parsed.notes   || '';
+      // Set type dropdown
+      const typeEl = document.getElementById('ei-type');
+      const matchedType = opTypes.find(t => t.name === parsed.type);
+      if (matchedType) typeEl.value = matchedType.name;
+
+      document.getElementById('email-import-preview').style.display = 'block';
+      document.getElementById('ei-save-btn').classList.remove('hidden');
+      toast('Details extracted — review and save');
+    } catch(e) {
+      toast('Could not extract details. Try again.', 'error');
+    }
+
+    btn.innerHTML = '✦ Extract Lead Details';
+    btn.disabled = false;
+  }
+
+  async function saveEmailLead() {
+    const contact = document.getElementById('ei-contact').value.trim();
+    const company = document.getElementById('ei-company').value.trim();
+    if (!contact || !company) { toast('Contact and company are required', 'error'); return; }
+
+    const user = Auth.getUser();
+    const newLead = {
+      id:         uid(),
+      createdAt:  now(),
+      updatedAt:  now(),
+      createdBy:  user?.email || '',
+      contact,
+      company,
+      phone:      document.getElementById('ei-phone').value.trim(),
+      email:      document.getElementById('ei-email').value.trim(),
+      type:       document.getElementById('ei-type').value,
+      stage:      sortedStages()[0].name,
+      priority:   'warm',
+      value:      '',
+      source:     'Email',
+      city:       document.getElementById('ei-city').value.trim(),
+      assignedTo: user?.email || '',
+      notes:      document.getElementById('ei-notes').value.trim(),
+    };
+
+    leads.push(newLead);
+    const ok = await Sheets.appendRow(newLead);
+    closeModal('modal-email-import');
+    updateCounts();
+    render();
+    toast(ok ? '✓ Lead created from email' : 'Lead saved locally (Sheets sync failed)', ok ? 'success' : 'error');
+  }
+
   // ── FILTER / VIEW ──
   function setFilter(type, val) {
     if (type === 'type')  filterType  = val;
@@ -726,6 +832,7 @@ return f.name;  }
     openAddStage, openEditStage, saveStage, deleteStage,
     openAddOpType, openEditOpType, saveOpType, deleteOpType,
     openAI, generateAI, copyAI,
+    openEmailImport, parseEmailLead, saveEmailLead,
     setFilter, setViewMode,
     refreshLeads,
     // color swatch handlers (called from HTML)
