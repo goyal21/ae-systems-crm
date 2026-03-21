@@ -27,7 +27,8 @@
       <div class="login-feature"><div class="login-feature-dot"></div><div class="login-feature-text">Track & close sales opportunities</div></div>
       <div class="login-feature"><div class="login-feature-dot"></div><div class="login-feature-text">AI-assisted outreach & follow-ups</div></div>
       <div class="login-iit">
-      
+        <span style="font-size:18px">🎓</span>
+        <div class="login-iit-text">Developed in partnership with IIT Jammu</div>
       </div>
     </div>
   </div>
@@ -41,7 +42,7 @@
     <div class="login-google-wrap">
       <div id="google-btn"></div>
     </div>
-    <div class="login-note">Only authorised team members can sign in. </div>
+    <div class="login-note">Only authorised team members can sign in.<br>Contact Amit G if you need access.</div>
   </div>
 
 </div>
@@ -86,9 +87,6 @@
       <div class="nav-item" onclick="App.showView('settings')" id="nav-settings">
         <span class="nav-icon">⊙</span> Settings
       </div>
-         <a href="" id="db-link" target="_blank" class="nav-item" style="text-decoration:none">
-  <span class="nav-icon">📊</span> Database
-</a>
     </div>
 
     <div class="sidebar-footer">
@@ -101,6 +99,7 @@
     <div class="topbar">
       <div class="topbar-title" id="topbar-title">Dashboard <span>Overview</span></div>
       <button class="btn btn-ghost btn-sm" id="btn-refresh" onclick="App.refreshLeads()">↻ Refresh</button>
+      <button class="btn btn-ai btn-sm" onclick="App.openEmailImport()">✦ Import from Email</button>
       <button class="btn btn-primary btn-sm" onclick="App.openAddLead()">＋ New Opportunity</button>
     </div>
     <div class="content" id="content"></div>
@@ -307,6 +306,64 @@
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('modal-optype')">Cancel</button>
       <button class="btn btn-primary" onclick="App.saveOpType()">Save Type</button>
+    </div>
+  </div>
+</div>
+
+<!-- EMAIL IMPORT -->
+<div class="modal-backdrop hidden" id="modal-email-import">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">✦ Import Lead from Email</div>
+      <div class="modal-close" onclick="closeModal('modal-email-import')">✕</div>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Paste the full email content here</label>
+        <textarea id="email-import-text" style="min-height:180px" placeholder="Paste the entire email — subject, body, sender details. AI will extract the lead information automatically..."></textarea>
+      </div>
+      <button class="btn btn-ai" onclick="App.parseEmailLead()">✦ Extract Lead Details</button>
+      <div id="email-import-preview" style="display:none">
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px">Extracted Details — review before saving</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Contact Name</label>
+            <input type="text" id="ei-contact">
+          </div>
+          <div class="form-group">
+            <label>Company</label>
+            <input type="text" id="ei-company">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="text" id="ei-phone">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="ei-email">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Opportunity Type</label>
+            <select id="ei-type"></select>
+          </div>
+          <div class="form-group">
+            <label>City</label>
+            <input type="text" id="ei-city">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Notes (AI Summary)</label>
+          <textarea id="ei-notes" style="min-height:80px"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-email-import')">Cancel</button>
+      <button class="btn btn-primary hidden" id="ei-save-btn" onclick="App.saveEmailLead()">Save as Lead</button>
     </div>
   </div>
 </div>
